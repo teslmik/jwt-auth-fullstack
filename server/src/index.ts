@@ -5,7 +5,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 
 import router from './routers/index.js';
-import { ErrorFn } from './middlewares/error.middleware.js'
+import { errorMiddleware } from './middlewares/error.middleware.js'
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 app.use('/api', router);
-app.use(ErrorFn);
+app.use(errorMiddleware);
 
 const start = async () => {
   try {
