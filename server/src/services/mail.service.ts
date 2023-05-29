@@ -1,24 +1,38 @@
-import nodemailer, { type Transporter } from 'nodemailer';
-import SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
+import NodeMailer from 'nodemailer';
+
+type EmailProperties = {
+  to: string;
+  link: string;
+};
 
 class MailService {
-  transporter: Transporter;
+  private nodeMailer: typeof NodeMailer;
 
-  constructor() {
-    this.transporter = nodemailer.createTransport({
-      service: "gmail",
-      host: 'smtp.gmail.com',
-      port: 587,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-      }
-    });
+  public constructor(nodeMailer: typeof NodeMailer) {
+    this.nodeMailer = nodeMailer;
   }
 
-  async sendActivationMail(to: string, link: string) {
-    await this.transporter.sendMail({
-      from: process.env.SMTP_USER,
+  private generateTransporterConfig() {
+    return {
+      service: 'gmail',
+      auth: {
+        user: process.env.SMTP_USER as string,
+        pass: process.env.SMTP_PASSWORD as string,
+      },
+    };
+  }
+
+  private createTransporter(): NodeMailer.Transporter {
+    const transporterConfig = this.generateTransporterConfig();
+    return this.nodeMailer.createTransport(transporterConfig);
+  }
+
+  private generateEmailConfig({
+    to,
+    link,
+  }: EmailProperties) {
+    return {
+      from: process.env.SMTP_USER as string,
       to,
       subject: 'Activation account on ' + process.env.API_URL,
       text: '',
@@ -28,8 +42,20 @@ class MailService {
           <a href="${link}">${link}</a>
         </div>
       `,
+    };
+  }
+
+  public async sendActivationMail({
+    to,
+    link,
+  }: EmailProperties): Promise<unknown> {
+    const transporter = this.createTransporter();
+    const emailConfig = this.generateEmailConfig({
+      to,
+      link,
     });
+    return await transporter.sendMail(emailConfig);
   }
 }
 
-export const mailService = new MailService();
+export const mailService = new MailService(NodeMailer);
