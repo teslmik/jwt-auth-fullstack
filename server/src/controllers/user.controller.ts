@@ -17,34 +17,48 @@ class UserController {
 
       return res.json(userData);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 
   async activate(req: Request, res: Response, next: NextFunction) {
     try {
-    } catch (error) {}
+      const activationLink = req.params.link;
+      await userService.activate(activationLink);
+
+      return res.redirect(process.env.CLIENT_URL as string);
+    } catch (error) {
+      next(error);
+    }
   }
 
   async refresh(req: Request, res: Response, next: NextFunction) {
     try {
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 
   async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
       res.json(['123', '456']);
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
