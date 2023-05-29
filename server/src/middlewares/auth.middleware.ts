@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 import { ApiError } from "../exeptions/api-error.js";
 import { tokenService } from "../services/token.service.js";
 
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction): void | NextFunction => {
+const authMiddleware = (req: Request & { user: string | JwtPayload }, res: Response, next: NextFunction): void | NextFunction => {
   try {
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
@@ -21,7 +22,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction): void |
       return next(ApiError.UnauthorizedError());
     }
 
-    req.body = userData;
+    req.user = userData;
 
     next();
   } catch (error) {
