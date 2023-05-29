@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-size: 18px;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 320px;
+
+    input {
+      padding: 8px;
+    }
+
+    button {
+      cursor: pointer;
+      height: 42px;
+    }
+  }
+}

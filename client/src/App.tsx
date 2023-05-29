@@ -1,10 +1,11 @@
-import './App.css'
+import './App.scss'
+import { LoginForm } from './components/login-form'
 
 function App() {
   return (
-    <>
-      123
-    </>
+    <div className='container'>
+      <LoginForm />
+    </div>
   )
 }
 
