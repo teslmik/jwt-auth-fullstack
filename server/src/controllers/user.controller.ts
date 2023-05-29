@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
+import { validationResult } from 'express-validator';
+import { ApiError } from '../exeptions/api-error.js';
 
 import { userService } from '../services/user.service.js';
 
@@ -7,6 +9,11 @@ import { type UserReqDto } from '../types/types.js';
 class UserController {
   async registration(req: Request, res: Response, next: NextFunction) {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(ApiError.BadRequest('Validation error', errors.array()));
+      }
+
       const { email, password }: UserReqDto = req.body;
       const userData = await userService.registration(email, password);
       res.cookie('refreshToken', userData.refreshToken, {
