@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { handlError } from '../helpers/error.helper';
 import { AuthResponce, type UserType } from '../types/types';
@@ -13,7 +13,7 @@ type Properties = {
 const ApiUrl = import.meta.env.VITE_APP_API_URL as string;
 
 const UserInfo: React.FC<Properties> = ({ user, setIsAuth, setUser }) => {
-  const checkAuth = async () => {
+  const checkAuth = useCallback(() => async () => {
     try {
       const { data } = await axios.get<AuthResponce>(
         `${ApiUrl}/refresh`,
@@ -25,14 +25,13 @@ const UserInfo: React.FC<Properties> = ({ user, setIsAuth, setUser }) => {
     } catch (error) {
       handlError(error);
     }
-  };
+  }, [setIsAuth, setUser]) ;
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
       checkAuth();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [checkAuth]);
   
   return (
     <>
