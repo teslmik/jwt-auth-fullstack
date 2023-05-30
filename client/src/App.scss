@@ -12,19 +12,71 @@
   width: 100vw;
   height: 100vh;
 
-  div {
+  h1 {
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 24px;
+  }
+
+  form {
     display: flex;
     flex-direction: column;
     gap: 10px;
     min-width: 320px;
 
+    label {
+      display: flex;
+      flex-direction: column;
+      font-size: 14px;
+    }
+
     input {
       padding: 8px;
+    }
+
+    p {
+      text-align: center;
+      font-size: 16px;
+    }
+
+    span {
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 16px;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: coral;
+      }
+    }
+
+    .btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
     }
 
     button {
       cursor: pointer;
       height: 42px;
+      min-width: 100%;
     }
+  }
+
+  h2 {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  ul {
+    margin: 20px 0;
+  }
+
+  li {
+    list-style-type: none;
+  } 
+
+  .load-users {
+    padding: 5px 20px;
   }
 }

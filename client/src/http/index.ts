@@ -1,15 +1,38 @@
-import axios from "axios";
-import { ApiUrl } from "../enums/api-url.enum";
+import axios from 'axios';
 
-const $api = axios.create({
+import { ApiUrl } from '../enums/api-url.enum';
+import { AuthResponce } from '../types/types';
+
+const api = axios.create({
+  baseURL: ApiUrl.API_URL,
   withCredentials: true,
-  baseURL: ApiUrl.API_URL
 });
 
-$api.interceptors.request.use((config) => {
+api.interceptors.request.use((config) => {
   config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
 
   return config;
 });
 
-export default $api;
+api.interceptors.response.use(
+  (config) => {
+    return config;
+  },
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response.status == 401 && error.config && !error.config._isRetry) {
+      originalRequest._isRetry = true;
+      try {
+        const response = await axios.get<AuthResponce>(`${ApiUrl.API_URL}/refresh`, { withCredentials: true });
+        localStorage.setItem('token', response.data.accessToken);
+        return api.request(originalRequest);
+      } catch (error) {
+        console.log('error: ', error);
+      }
+    }
+    throw error;
+  },
+);
+
+export default api;
