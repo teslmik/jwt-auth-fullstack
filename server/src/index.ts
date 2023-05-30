@@ -10,6 +10,7 @@ import errorMiddleware from './middlewares/error.middleware.js'
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
+const DB_URL = process.env.MONGO_DB_URI as string;
 const app = express();
 
 app.use(express.json());
@@ -21,9 +22,18 @@ app.use(cors({
 app.use('/api', router);
 app.use(errorMiddleware);
 
+const Conection = async () => {
+  try {
+    await mongoose.connect(DB_URL);
+    console.log('Database connected successfully');
+  } catch (error) {
+    console.log('Error while connecteing the database', error);
+  }
+}
+
 const start = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_DB_URI as string);
+    Conection();
     app.listen(PORT, () => console.log(`Server started on port ${PORT}...`));
   } catch (error) {
     console.log(error);
