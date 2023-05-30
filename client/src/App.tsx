@@ -1,9 +1,11 @@
+import { LoginForm } from './components/components';
+
 import './App.scss';
-import { LoginForm } from './components/login-form';
 
 function App() {
   return (
     <div className="container">
+      <h1>Anywhere in your app!</h1>
       <LoginForm />
     </div>
   );
