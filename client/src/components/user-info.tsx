@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 
-import { ApiUrl } from '../enums/enums';
 import { handlError } from '../helpers/error.helper';
 import { AuthResponce, type UserType } from '../types/types';
 
@@ -11,11 +10,13 @@ type Properties = {
   setUser: React.Dispatch<React.SetStateAction<UserType>>;
 };
 
+const ApiUrl = import.meta.env.VITE_APP_API_URL as string;
+
 const UserInfo: React.FC<Properties> = ({ user, setIsAuth, setUser }) => {
   const checkAuth = async () => {
     try {
       const { data } = await axios.get<AuthResponce>(
-        `${ApiUrl.API_URL}/refresh`,
+        `${ApiUrl}/refresh`,
         { withCredentials: true },
       );
       localStorage.setItem('token', data.accessToken);

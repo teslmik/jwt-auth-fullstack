@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-import { ApiUrl } from '../enums/api-url.enum';
 import { AuthResponce } from '../types/types';
 
+const ApiUrl = import.meta.env.VITE_APP_API_URL as string;
+
 const api = axios.create({
-  baseURL: ApiUrl.API_URL,
+  baseURL: ApiUrl,
   withCredentials: true,
 });
 
@@ -24,7 +25,7 @@ api.interceptors.response.use(
     if (error.response.status == 401 && error.config && !error.config._isRetry) {
       originalRequest._isRetry = true;
       try {
-        const response = await axios.get<AuthResponce>(`${ApiUrl.API_URL}/refresh`, { withCredentials: true });
+        const response = await axios.get<AuthResponce>(`${ApiUrl}/refresh`, { withCredentials: true });
         localStorage.setItem('token', response.data.accessToken);
         return api.request(originalRequest);
       } catch (error) {
