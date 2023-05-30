@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -33,27 +32,30 @@ const LoginForm: React.FC = () => {
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handlError = (error: any) => {
+    console.log(error.response?.data?.message);
+  }
+
   const login = async (values: AuthRequest) => {
     try {
-      const response = await AuthService.login(values);
-      localStorage.setItem('token', response.data.accessToken);
+      const { data } = await AuthService.login(values);
+      localStorage.setItem('token', data.accessToken);
       setIsAuth(true);
-      setUser(response.data.user);
-    } catch (error: any) {
-      console.log(error.response?.data?.message);
+      setUser(data.user);
+    } catch (error) {
+      handlError(error);
     }
   };
 
   const registration = async (values: AuthRequest) => {
     try {
-      const response = await AuthService.registration(values);
-      console.log('values: ', values);
-      console.log('response: ', response);
-      localStorage.setItem('token', response.data.accessToken);
+      const { data } = await AuthService.registration(values);
+      localStorage.setItem('token', data.accessToken);
       setIsAuth(true);
-      setUser(response.data.user);
-    } catch (error: any) {
-      console.log(error);
+      setUser(data.user);
+    } catch (error) {
+      handlError(error);
     }
   };
 
@@ -63,28 +65,28 @@ const LoginForm: React.FC = () => {
       localStorage.removeItem('token');
       setIsAuth(false);
       setUser(null);
-    } catch (error: any) {
-      console.log(error.response?.data?.message);
+    } catch (error) {
+      handlError(error);
     }
   };
 
   const checkAuth = async () => {
     try {
-      const response = await axios.get<AuthResponce>(`${ApiUrl.API_URL}/refresh`, { withCredentials: true });
-      localStorage.setItem('token', response.data.accessToken);
+      const { data } = await axios.get<AuthResponce>(`${ApiUrl.API_URL}/refresh`, { withCredentials: true });
+      localStorage.setItem('token', data.accessToken);
       setIsAuth(true);
-      setUser(response.data.user);
-    } catch (error: any) {
-      console.log(error.response?.data?.message);
+      setUser(data.user);
+    } catch (error) {
+      handlError(error);
     }
   };
 
   const getUsers = async () => {
     try {
-      const response = await UserService.fetchUsers();
-      setUsers(response.data);
+      const { data } = await UserService.fetchUsers();
+      setUsers(data);
     } catch (error) {
-      console.log('error: ', error);
+      handlError(error);
     }
   };
 
@@ -92,6 +94,7 @@ const LoginForm: React.FC = () => {
     if (localStorage.getItem('token')) {
       checkAuth();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
